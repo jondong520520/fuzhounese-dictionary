@@ -212,3 +212,7 @@ export const dictionaryEntries: DictionaryEntry[] = [
     ]
   },
 ]
+
+export function getDictionaryEntryById(id: string): DictionaryEntry | undefined {
+  return dictionaryEntries.find((e) => e.id === id)
+}

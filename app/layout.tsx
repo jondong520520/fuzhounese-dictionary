@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { DM_Serif_Display, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import { SiteNav } from '@/components/site-nav'
+import { StudyProviders } from '@/components/study-providers'
 
 const dmSerif = DM_Serif_Display({ 
   weight: '400',
@@ -14,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Hók-ciŭ-uâ | Fuzhounese Dictionary',
+  title: 'FuzhouneseDict',
   description: 'Learn Fuzhounese with audio pronunciations',
   generator: 'v0.app',
   icons: {
@@ -44,7 +46,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${dmSerif.variable} bg-background`}>
       <body className="font-sans antialiased">
-        {children}
+        <StudyProviders>
+          <SiteNav />
+          {children}
+        </StudyProviders>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

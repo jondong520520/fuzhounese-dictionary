@@ -13,12 +13,10 @@ export function Dictionary() {
 
   const filteredEntries = useMemo(() => {
     return dictionaryEntries.filter((entry) => {
-      // Category filter
       if (selectedCategory !== 'all' && entry.category !== selectedCategory) {
         return false
       }
 
-      // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
         return (
@@ -34,47 +32,29 @@ export function Dictionary() {
   }, [searchQuery, selectedCategory])
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/30">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
-              <BookOpen className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h1 className="font-serif text-2xl md:text-3xl text-foreground">
-              Hók-ciŭ-uâ
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-sm md:text-base">
-            A modern Fuzhounese dictionary with audio pronunciations
+    <div className="min-h-[calc(100vh-3.5rem)] sm:min-h-[calc(100vh-4rem)]">
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:py-10">
+        <div className="mb-8 space-y-3">
+          <h1 className="font-serif text-3xl text-foreground sm:text-4xl">Browse</h1>
+          <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
+            Explore the full word list by category, or refine with a search.
           </p>
         </div>
-      </header>
 
-      {/* Main content */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Search and filters */}
-        <div className="space-y-4 mb-8">
+        <div className="mb-8 space-y-4">
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
-          <CategoryFilter 
-            selected={selectedCategory} 
-            onSelect={setSelectedCategory} 
-          />
+          <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
         </div>
 
-        {/* Audio tip */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6 p-3 bg-secondary/50 rounded-xl">
+        <div className="mb-6 flex items-center gap-2 rounded-xl bg-secondary/50 p-3 text-sm text-muted-foreground">
           <Volume2 className="h-4 w-4 text-primary" />
           <span>Click the speaker icon on any word to hear the pronunciation</span>
         </div>
 
-        {/* Results count */}
-        <p className="text-sm text-muted-foreground mb-4">
+        <p className="mb-4 text-sm text-muted-foreground">
           {filteredEntries.length} {filteredEntries.length === 1 ? 'word' : 'words'} found
         </p>
 
-        {/* Word grid */}
         {filteredEntries.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
             {filteredEntries.map((entry) => (
@@ -82,11 +62,11 @@ export function Dictionary() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16">
-            <div className="h-16 w-16 rounded-full bg-secondary mx-auto mb-4 flex items-center justify-center">
+          <div className="py-16 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
               <BookOpen className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="font-serif text-xl text-foreground mb-2">No words found</h3>
+            <h3 className="mb-2 font-serif text-xl text-foreground">No words found</h3>
             <p className="text-muted-foreground">
               Try adjusting your search or filter criteria
             </p>
@@ -94,13 +74,12 @@ export function Dictionary() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/30 mt-16">
-        <div className="max-w-4xl mx-auto px-4 py-8 text-center">
+      <footer className="mt-8 border-t border-border/30">
+        <div className="mx-auto max-w-4xl px-4 py-8 text-center">
           <p className="text-sm text-muted-foreground">
             Preserving the beautiful language of Fuzhou
           </p>
-          <p className="text-xs text-muted-foreground/60 mt-2">
+          <p className="mt-2 text-xs text-muted-foreground/60">
             福州話 • Eastern Min • 閩東語
           </p>
         </div>

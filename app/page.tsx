@@ -1,5 +1,5 @@
-import { Dictionary } from '@/components/dictionary'
+import { HomePage } from '@/components/home-page'
 
 export default function Home() {
-  return <Dictionary />
+  return <HomePage />
 }
