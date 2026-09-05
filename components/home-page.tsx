@@ -5,6 +5,7 @@ import { BookOpen } from 'lucide-react'
 import { SearchBar } from '@/components/search-bar'
 import { WordCard } from '@/components/word-card'
 import { dictionaryEntries } from '@/lib/dictionary-data'
+import './home-title.css'
 
 function matchesQuery(query: string, entry: (typeof dictionaryEntries)[number]) {
   const normalized = query.toLowerCase()
@@ -32,12 +33,8 @@ export function HomePage() {
         <section className="px-4 pb-10 pt-16 sm:pb-14 sm:pt-24">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="font-serif text-4xl tracking-tight text-foreground sm:text-5xl md:text-6xl">
-              <span className="inline-block animate-hero-title motion-reduce:animate-none">
-                Fuzhounese
-              </span>{' '}
-              <span className="inline-block animate-hero-title [animation-delay:125ms] motion-reduce:animate-none">
-                Dictionary
-              </span>
+              <span className="home-title-word">Fuzhounese</span>{' '}
+              <span className="home-title-word home-title-word--delay">Dictionary</span>
             </h1>
             <p className="mt-4 text-base text-muted-foreground sm:text-lg">
               Search a word in English or Mandarin
