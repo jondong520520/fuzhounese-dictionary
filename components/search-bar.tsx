@@ -1,6 +1,7 @@
 'use client'
 
 import { Search, X } from 'lucide-react'
+import type { KeyboardEventHandler, Ref } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -14,6 +15,15 @@ interface SearchBarProps {
   placeholder?: string
   size?: 'default' | 'hero'
   autoFocus?: boolean
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement>
+  onFocus?: () => void
+  inputRef?: Ref<HTMLInputElement>
+  id?: string
+  'aria-expanded'?: boolean
+  'aria-controls'?: string
+  'aria-activedescendant'?: string
+  'aria-autocomplete'?: 'list' | 'none'
+  role?: string
 }
 
 export function SearchBar({
@@ -22,6 +32,15 @@ export function SearchBar({
   placeholder = 'Search in Fuzhounese, Chinese, or English...',
   size = 'default',
   autoFocus = false,
+  onKeyDown,
+  onFocus,
+  inputRef,
+  id,
+  'aria-expanded': ariaExpanded,
+  'aria-controls': ariaControls,
+  'aria-activedescendant': ariaActiveDescendant,
+  'aria-autocomplete': ariaAutocomplete,
+  role,
 }: SearchBarProps) {
   const isHero = size === 'hero'
 
@@ -59,30 +78,40 @@ export function SearchBar({
         aria-hidden
       />
       <Input
+        ref={inputRef}
+        id={id}
         type="text"
+        role={role}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        onFocus={onFocus}
         autoFocus={autoFocus}
+        autoComplete="off"
+        aria-expanded={ariaExpanded}
+        aria-controls={ariaControls}
+        aria-activedescendant={ariaActiveDescendant}
+        aria-autocomplete={ariaAutocomplete}
         className={cn(
           'bg-card border-border/50 shadow-sm',
           isHero
             ? cn(
-                'h-14 rounded-2xl pl-14 pr-14 text-base sm:h-16 sm:text-lg',
-                'transition-[box-shadow,border-color]',
+                'h-14 rounded-2xl border-white/80 bg-white pl-14 pr-14 text-base text-foreground shadow-md sm:h-16 sm:text-lg',
+                'transition-[box-shadow,border-color,transform]',
                 motionDuration,
                 motionEase,
-                'hover:shadow-md',
-                // focus (mouse click) + focus-visible (keyboard) — not tied to typing
-                'focus:border-primary/55 focus:shadow-md',
-                'focus-visible:border-primary/70 focus-visible:shadow-md focus-visible:ring-primary/35',
-                'motion-reduce:transition-none motion-reduce:hover:shadow-sm'
+                'hover:shadow-lg',
+                'focus:border-primary/55 focus:shadow-lg',
+                'focus-visible:border-primary/70 focus-visible:shadow-lg focus-visible:ring-primary/35',
+                'motion-reduce:transition-none motion-reduce:hover:shadow-md'
               )
             : 'h-14 rounded-2xl pl-12 pr-12 text-base transition-shadow focus:shadow-md'
         )}
       />
       {value ? (
         <Button
+          type="button"
           variant="ghost"
           size="icon"
           onClick={() => onChange('')}
