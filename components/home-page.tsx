@@ -32,7 +32,12 @@ export function HomePage() {
         <section className="px-4 pb-10 pt-16 sm:pb-14 sm:pt-24">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="font-serif text-4xl tracking-tight text-foreground sm:text-5xl md:text-6xl">
-              Fuzhounese Dictionary
+              <span className="inline-block animate-hero-title motion-reduce:animate-none">
+                Fuzhounese
+              </span>{' '}
+              <span className="inline-block animate-hero-title [animation-delay:125ms] motion-reduce:animate-none">
+                Dictionary
+              </span>
             </h1>
             <p className="mt-4 text-base text-muted-foreground sm:text-lg">
               Search a word in English or Mandarin
@@ -77,7 +82,7 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="border-t border-border/30 bg-secondary/25 px-4 py-16 sm:py-20">
+        <section className="border-t border-border bg-secondary px-4 py-16 sm:py-20">
           <div className="mx-auto grid max-w-4xl gap-12 md:grid-cols-2 md:gap-16">
             <div>
               <h2 className="font-serif text-2xl text-foreground sm:text-3xl">
@@ -105,7 +110,7 @@ export function HomePage() {
         </section>
       </main>
 
-      <footer className="border-t border-border/30">
+      <footer className="border-t border-border">
         <div className="mx-auto max-w-4xl px-4 py-8 text-center">
           <p className="text-sm text-muted-foreground">
             Preserving the beautiful language of Fuzhou

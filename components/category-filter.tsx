@@ -20,7 +20,7 @@ export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
             "border-2",
             selected === category.id
               ? "bg-primary text-primary-foreground border-primary"
-              : "bg-card text-foreground border-border/50 hover:border-primary/50 hover:bg-secondary"
+              : "bg-card text-foreground border-border hover:border-accent hover:bg-secondary"
           )}
         >
           <span className="mr-1.5">{category.icon}</span>

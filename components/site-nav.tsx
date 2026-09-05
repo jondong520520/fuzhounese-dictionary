@@ -26,7 +26,7 @@ export function SiteNav() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/40 bg-background/90 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:h-16">
         <div className="flex min-w-0 items-center gap-6">
           <Link
@@ -50,8 +50,8 @@ export function SiteNav() {
                 className={cn(
                   'rounded-md px-3 py-2 text-sm transition-colors',
                   isActive(pathname, link.href)
-                    ? 'bg-secondary text-foreground font-medium'
-                    : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
+                    ? 'bg-primary/10 font-medium text-primary'
+                    : 'text-muted-foreground hover:bg-secondary hover:text-accent'
                 )}
               >
                 {link.label}
@@ -64,7 +64,7 @@ export function SiteNav() {
           <Button
             variant="outline"
             size="sm"
-            className="hidden rounded-full border-border/60 px-4 sm:inline-flex"
+            className="hidden rounded-full border-border px-4 sm:inline-flex"
             asChild
           >
             <Link href="/signin">Sign In</Link>
@@ -85,7 +85,7 @@ export function SiteNav() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-border/40 bg-background px-4 py-3 md:hidden">
+        <div className="border-t border-border bg-background px-4 py-3 md:hidden">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
@@ -95,8 +95,8 @@ export function SiteNav() {
                 className={cn(
                   'rounded-md px-3 py-2.5 text-sm transition-colors',
                   isActive(pathname, link.href)
-                    ? 'bg-secondary text-foreground font-medium'
-                    : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
+                    ? 'bg-primary/10 font-medium text-primary'
+                    : 'text-muted-foreground hover:bg-secondary hover:text-accent'
                 )}
               >
                 {link.label}
@@ -105,7 +105,7 @@ export function SiteNav() {
             <Link
               href="/signin"
               onClick={() => setMobileOpen(false)}
-              className="mt-1 rounded-md border border-border/60 px-3 py-2.5 text-center text-sm font-medium text-foreground"
+              className="mt-1 rounded-md border border-border px-3 py-2.5 text-center text-sm font-medium text-foreground"
             >
               Sign In
             </Link>
