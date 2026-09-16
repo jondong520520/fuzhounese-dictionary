@@ -6,7 +6,7 @@ import { ArrowLeft, Volume2, VolumeX } from 'lucide-react'
 import { useStudyList } from '@/contexts/study-list-context'
 import { requeueAfterRating, sortStudyIdsByDue } from '@/lib/study-persistence'
 import type { FlashcardAnswerMode, ReviewRating } from '@/lib/study-persistence'
-import { getDictionaryEntryById } from '@/lib/dictionary-data'
+import type { DictionaryEntry } from '@/types/dictionary'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useDictionaryAudio } from '@/hooks/use-dictionary-audio'
@@ -38,7 +38,7 @@ function PromptBlock({
   entry,
   mode,
 }: {
-  entry: NonNullable<ReturnType<typeof getDictionaryEntryById>>
+  entry: DictionaryEntry
   mode: FlashcardAnswerMode
 }) {
   if (mode === 'fuzhounese') {
@@ -61,7 +61,9 @@ function PromptBlock({
         <div>
           <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Fuzhounese</p>
           <p className="font-serif text-3xl md:text-4xl text-foreground">{entry.fuzhounese}</p>
-          <p className="text-lg text-primary italic mt-2">{entry.romanization}</p>
+          {entry.romanization ? (
+            <p className="text-lg text-primary italic mt-2">{entry.romanization}</p>
+          ) : null}
         </div>
         <div>
           <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">English</p>
@@ -75,7 +77,9 @@ function PromptBlock({
       <div>
         <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Fuzhounese</p>
         <p className="font-serif text-3xl md:text-4xl text-foreground">{entry.fuzhounese}</p>
-        <p className="text-lg text-primary italic mt-2">{entry.romanization}</p>
+        {entry.romanization ? (
+          <p className="text-lg text-primary italic mt-2">{entry.romanization}</p>
+        ) : null}
       </div>
       <div>
         <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Mandarin</p>
@@ -85,18 +89,16 @@ function PromptBlock({
   )
 }
 
-function AnswerFuzhouneseBlock({
-  entry,
-}: {
-  entry: NonNullable<ReturnType<typeof getDictionaryEntryById>>
-}) {
+function AnswerFuzhouneseBlock({ entry }: { entry: DictionaryEntry }) {
   const { playAudio, isPlaying, hasError } = useDictionaryAudio(entry.chinese)
   return (
     <div className="space-y-5 text-center pt-2">
       <div>
         <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Fuzhounese</p>
         <p className="font-serif text-4xl md:text-5xl text-foreground">{entry.fuzhounese}</p>
-        <p className="text-xl text-primary italic mt-2">{entry.romanization}</p>
+        {entry.romanization ? (
+          <p className="text-xl text-primary italic mt-2">{entry.romanization}</p>
+        ) : null}
       </div>
       <div className="flex justify-center">
         <Button
@@ -125,7 +127,7 @@ function AnswerBlock({
   entry,
   mode,
 }: {
-  entry: NonNullable<ReturnType<typeof getDictionaryEntryById>>
+  entry: DictionaryEntry
   mode: FlashcardAnswerMode
 }) {
   if (mode === 'fuzhounese') {
@@ -147,11 +149,23 @@ function AnswerBlock({
   )
 }
 
-export function FlashcardSession() {
+interface FlashcardSessionProps {
+  entries: DictionaryEntry[]
+}
+
+export function FlashcardSession({ entries }: FlashcardSessionProps) {
   const { wordIds, hydrated, progress, answerMode, recordReview } = useStudyList()
   const [queue, setQueue] = useState<string[]>([])
   const [revealed, setRevealed] = useState(false)
   const [reviewsCount, setReviewsCount] = useState(0)
+
+  const entriesById = useMemo(() => {
+    const map = new Map<string, DictionaryEntry>()
+    for (const entry of entries) {
+      map.set(entry.id, entry)
+    }
+    return map
+  }, [entries])
 
   useEffect(() => {
     if (!hydrated) return
@@ -169,7 +183,7 @@ export function FlashcardSession() {
   }, [hydrated, wordIds, progress])
 
   const currentId = queue[0]
-  const entry = useMemo(() => (currentId ? getDictionaryEntryById(currentId) : undefined), [currentId])
+  const entry = currentId ? entriesById.get(currentId) : undefined
   const nextDue = currentId ? progress[currentId]?.dueAt : undefined
 
   const handleRate = (rating: ReviewRating) => {
@@ -191,7 +205,7 @@ export function FlashcardSession() {
       <div className="max-w-md mx-auto text-center py-16 px-4">
         <p className="text-muted-foreground mb-6">Add words from the dictionary to your study list first.</p>
         <Button asChild>
-          <Link href="/">Browse dictionary</Link>
+          <Link href="/browse">Browse dictionary</Link>
         </Button>
       </div>
     )

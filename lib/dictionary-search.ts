@@ -1,7 +1,4 @@
-import {
-  dictionaryEntries,
-  type DictionaryEntry,
-} from '@/lib/dictionary-data'
+import type { DictionaryEntry } from '@/types/dictionary'
 
 export type MatchRank = 'exact' | 'prefix' | 'contains'
 
@@ -14,6 +11,7 @@ const RANK_SCORE: Record<MatchRank, number> = {
 function rankLatinField(field: string, query: string): MatchRank | null {
   const f = field.toLowerCase()
   const q = query.toLowerCase()
+  if (!f) return null
   if (f === q) return 'exact'
   if (f.startsWith(q)) return 'prefix'
   if (f.includes(q)) return 'contains'
@@ -21,6 +19,7 @@ function rankLatinField(field: string, query: string): MatchRank | null {
 }
 
 function rankCjkField(field: string, query: string): MatchRank | null {
+  if (!field) return null
   if (field === query) return 'exact'
   if (field.startsWith(query)) return 'prefix'
   if (field.includes(query)) return 'contains'
@@ -28,9 +27,11 @@ function rankCjkField(field: string, query: string): MatchRank | null {
 }
 
 function bestRankForEntry(entry: DictionaryEntry, query: string): MatchRank | null {
+  // Fuzhounese column may hold characters or romanization depending on data source
   const ranks: Array<MatchRank | null> = [
     rankLatinField(entry.english, query),
     rankLatinField(entry.romanization, query),
+    rankLatinField(entry.fuzhounese, query),
     rankCjkField(entry.chinese, query),
     rankCjkField(entry.fuzhounese, query),
   ]
@@ -45,12 +46,15 @@ function bestRankForEntry(entry: DictionaryEntry, query: string): MatchRank | nu
   return best
 }
 
-/** All matching entries, ranked exact → prefix → contains, then by english. */
-export function searchDictionary(query: string): DictionaryEntry[] {
+/** All matching entries from the provided list, ranked exact → prefix → contains. */
+export function searchDictionary(
+  query: string,
+  entries: DictionaryEntry[]
+): DictionaryEntry[] {
   const trimmed = query.trim()
   if (!trimmed) return []
 
-  return dictionaryEntries
+  return entries
     .map((entry) => {
       const rank = bestRankForEntry(entry, trimmed)
       return rank ? { entry, rank } : null
@@ -67,24 +71,29 @@ export function searchDictionary(query: string): DictionaryEntry[] {
 /** Top autocomplete suggestions (default 6). */
 export function getAutocompleteSuggestions(
   query: string,
+  entries: DictionaryEntry[],
   limit = 6
 ): DictionaryEntry[] {
-  return searchDictionary(query).slice(0, limit)
+  return searchDictionary(query, entries).slice(0, limit)
 }
 
 /**
  * True exact match on any primary field.
  * Returns the entry only when there is exactly one such entry.
  */
-export function findUniqueExactMatch(query: string): DictionaryEntry | undefined {
+export function findUniqueExactMatch(
+  query: string,
+  entries: DictionaryEntry[]
+): DictionaryEntry | undefined {
   const trimmed = query.trim()
   if (!trimmed) return undefined
 
   const q = trimmed.toLowerCase()
-  const exact = dictionaryEntries.filter((entry) => {
+  const exact = entries.filter((entry) => {
     return (
       entry.english.toLowerCase() === q ||
       entry.romanization.toLowerCase() === q ||
+      entry.fuzhounese.toLowerCase() === q ||
       entry.chinese === trimmed ||
       entry.fuzhounese === trimmed
     )

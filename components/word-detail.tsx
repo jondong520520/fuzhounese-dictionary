@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, Volume2, VolumeX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import type { DictionaryEntry } from '@/lib/dictionary-data'
+import type { DictionaryEntry } from '@/types/dictionary'
 import { StudyBookmarkButton } from '@/components/study-bookmark-button'
 import { useDictionaryAudio } from '@/hooks/use-dictionary-audio'
 import { cn } from '@/lib/utils'
@@ -21,9 +21,9 @@ export function WordDetail({ entry }: WordDetailProps) {
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/30">
         <div className="max-w-2xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
           <Button variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground" asChild>
-            <Link href="/">
+            <Link href="/browse">
               <ArrowLeft className="h-4 w-4" />
-              Back to dictionary
+              Back to browse
             </Link>
           </Button>
           <div className="flex items-center gap-2">

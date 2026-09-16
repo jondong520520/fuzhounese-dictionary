@@ -1,11 +1,14 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { BookOpen } from 'lucide-react'
 import { DictionarySearchBox } from '@/components/dictionary-search-box'
+import type { DictionaryEntry } from '@/types/dictionary'
 import './home-title.css'
 
-export function HomePage() {
+interface HomePageProps {
+  entries: DictionaryEntry[]
+}
+
+export function HomePage({ entries }: HomePageProps) {
   return (
     <div>
       <main>
@@ -30,7 +33,7 @@ export function HomePage() {
                 </h1>
 
                 <div className="relative z-20 mt-6 sm:mt-8">
-                  <DictionarySearchBox size="hero" autoFocus />
+                  <DictionarySearchBox entries={entries} size="hero" autoFocus />
                 </div>
               </div>
             </div>

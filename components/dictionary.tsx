@@ -3,33 +3,63 @@
 import { useState, useMemo } from 'react'
 import { WordCard } from '@/components/word-card'
 import { SearchBar } from '@/components/search-bar'
-import { CategoryFilter } from '@/components/category-filter'
-import { dictionaryEntries } from '@/lib/dictionary-data'
+import { CategoryFilter, type CategoryOption } from '@/components/category-filter'
+import type { DictionaryEntry } from '@/types/dictionary'
+import { entryMatchesQuery } from '@/lib/dictionary-search'
 import { BookOpen, Volume2 } from 'lucide-react'
 
-export function Dictionary() {
+function buildCategoryOptions(entries: DictionaryEntry[]): CategoryOption[] {
+  const knownIcons: Record<string, string> = {
+    greetings: '👋',
+    food: '🍜',
+    family: '👨‍👩‍👧',
+    numbers: '🔢',
+    daily: '☀️',
+    'daily-life': '☀️',
+    verb: '✏️',
+    adjective: '🏷️',
+    colors: '🎨',
+    phrases: '💬',
+    places: '📍',
+  }
+
+  const ids = Array.from(new Set(entries.map((e) => e.category).filter(Boolean))).sort()
+
+  return [
+    { id: 'all', label: 'All Words', icon: '📚' },
+    ...ids.map((id) => ({
+      id,
+      label: id
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase()),
+      icon: knownIcons[id] ?? knownIcons[id.toLowerCase()] ?? '🔖',
+    })),
+  ]
+}
+
+interface DictionaryProps {
+  entries: DictionaryEntry[]
+}
+
+export function Dictionary({ entries }: DictionaryProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
 
+  const categoryOptions = useMemo(() => buildCategoryOptions(entries), [entries])
+
   const filteredEntries = useMemo(() => {
-    return dictionaryEntries.filter((entry) => {
+    return entries.filter((entry) => {
       if (selectedCategory !== 'all' && entry.category !== selectedCategory) {
         return false
       }
 
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase()
-        return (
-          entry.fuzhounese.includes(searchQuery) ||
-          entry.romanization.toLowerCase().includes(query) ||
-          entry.chinese.includes(searchQuery) ||
-          entry.english.toLowerCase().includes(query)
-        )
+      if (searchQuery.trim()) {
+        return entryMatchesQuery(entry, searchQuery)
       }
 
       return true
     })
-  }, [searchQuery, selectedCategory])
+  }, [entries, searchQuery, selectedCategory])
 
   return (
     <div className="min-h-[calc(100vh-3.5rem)] sm:min-h-[calc(100vh-4rem)]">
@@ -43,7 +73,11 @@ export function Dictionary() {
 
         <div className="mb-8 space-y-4">
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
-          <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
+          <CategoryFilter
+            selected={selectedCategory}
+            onSelect={setSelectedCategory}
+            categories={categoryOptions}
+          />
         </div>
 
         <div className="mb-6 flex items-center gap-2 rounded-xl bg-secondary/50 p-3 text-sm text-muted-foreground">

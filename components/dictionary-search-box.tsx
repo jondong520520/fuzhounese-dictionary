@@ -8,9 +8,10 @@ import {
   getAutocompleteSuggestions,
 } from '@/lib/dictionary-search'
 import { cn } from '@/lib/utils'
-import type { DictionaryEntry } from '@/lib/dictionary-data'
+import type { DictionaryEntry } from '@/types/dictionary'
 
 interface DictionarySearchBoxProps {
+  entries: DictionaryEntry[]
   initialQuery?: string
   size?: 'default' | 'hero'
   autoFocus?: boolean
@@ -19,6 +20,7 @@ interface DictionarySearchBoxProps {
 }
 
 export function DictionarySearchBox({
+  entries,
   initialQuery = '',
   size = 'default',
   autoFocus = false,
@@ -39,8 +41,8 @@ export function DictionarySearchBox({
   }, [initialQuery])
 
   const suggestions = useMemo(
-    () => getAutocompleteSuggestions(query, 6),
-    [query]
+    () => getAutocompleteSuggestions(query, entries, 6),
+    [query, entries]
   )
 
   const showDropdown = open && query.trim().length > 0 && suggestions.length > 0
@@ -70,7 +72,7 @@ export function DictionarySearchBox({
     const trimmed = rawQuery.trim()
     if (!trimmed) return
 
-    const exact = findUniqueExactMatch(trimmed)
+    const exact = findUniqueExactMatch(trimmed, entries)
     if (exact) {
       setOpen(false)
       router.push(`/word/${exact.id}`)
@@ -188,10 +190,14 @@ export function DictionarySearchBox({
                       <span className="font-serif text-foreground/90">
                         {entry.fuzhounese}
                       </span>
-                      <span className="mx-1.5 text-border">·</span>
-                      <span className="italic text-primary">
-                        {entry.romanization}
-                      </span>
+                      {entry.romanization ? (
+                        <>
+                          <span className="mx-1.5 text-border">·</span>
+                          <span className="italic text-primary">
+                            {entry.romanization}
+                          </span>
+                        </>
+                      ) : null}
                     </p>
                   </div>
                   <span className="shrink-0 pt-0.5 text-xs text-muted-foreground">

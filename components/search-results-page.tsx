@@ -6,12 +6,17 @@ import { BookOpen } from 'lucide-react'
 import { DictionarySearchBox } from '@/components/dictionary-search-box'
 import { WordCard } from '@/components/word-card'
 import { searchDictionary } from '@/lib/dictionary-search'
+import type { DictionaryEntry } from '@/types/dictionary'
 
-export function SearchResultsPage() {
+interface SearchResultsPageProps {
+  entries: DictionaryEntry[]
+}
+
+export function SearchResultsPage({ entries }: SearchResultsPageProps) {
   const searchParams = useSearchParams()
   const query = (searchParams.get('q') ?? '').trim()
 
-  const results = useMemo(() => searchDictionary(query), [query])
+  const results = useMemo(() => searchDictionary(query, entries), [query, entries])
 
   return (
     <div className="min-h-[calc(100vh-3.5rem)] sm:min-h-[calc(100vh-4rem)]">
@@ -30,7 +35,11 @@ export function SearchResultsPage() {
           )}
 
           <div className="max-w-2xl">
-            <DictionarySearchBox initialQuery={query} autoFocus={!query} />
+            <DictionarySearchBox
+              entries={entries}
+              initialQuery={query}
+              autoFocus={!query}
+            />
           </div>
         </div>
 

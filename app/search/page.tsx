@@ -1,7 +1,10 @@
 import { Suspense } from 'react'
 import { SearchResultsPage } from '@/components/search-results-page'
+import { getAllDictionaryEntries } from '@/lib/dictionary-repo'
 
-export default function SearchPage() {
+export default async function SearchPage() {
+  const entries = await getAllDictionaryEntries()
+
   return (
     <Suspense
       fallback={
@@ -10,7 +13,7 @@ export default function SearchPage() {
         </div>
       }
     >
-      <SearchResultsPage />
+      <SearchResultsPage entries={entries} />
     </Suspense>
   )
 }
