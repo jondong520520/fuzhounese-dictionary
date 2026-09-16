@@ -77,7 +77,8 @@ export function applyRating(
 ): CardProgress {
   const ease = prev?.ease ?? 2.5
   const reps = prev?.repetitions ?? 0
-  const prevInterval = prev?.intervalMs > 0 ? prev.intervalMs : 24 * 60 * 60 * 1000
+  const prevInterval =
+    prev && prev.intervalMs > 0 ? prev.intervalMs : 24 * 60 * 60 * 1000
 
   if (rating === 'again') {
     return {

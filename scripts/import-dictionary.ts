@@ -11,6 +11,13 @@ const adapter = new PrismaPg({
 
 const prisma = new PrismaClient({ adapter });
 
+type CsvRow = {
+  English: string;
+  Mandarin: string;
+  Fuzhounese: string;
+  Category: string;
+};
+
 async function main() {
   const csvPath = path.join(process.cwd(), "data", "dictionary.csv");
 
@@ -20,7 +27,7 @@ async function main() {
     columns: true,
     skip_empty_lines: true,
     trim: true,
-  });
+  }) as CsvRow[];
 
   await prisma.dictionaryEntry.deleteMany();
 
